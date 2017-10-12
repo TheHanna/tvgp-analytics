@@ -1,0 +1,33 @@
+{
+  "name": "tvgp-analytics",
+  "version": "1.0.0",
+  "description": "A web scraper to gather data about That Video Game Podcast, analyze, and produce neat charts, graphs, and customizable RSS feeds",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TheHanna/tvgp-analytics.git"
+  },
+  "keywords": [
+    "tvgp"
+  ],
+  "author": "TheHanna",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/TheHanna/tvgp-analytics/issues"
+  },
+  "homepage": "https://github.com/TheHanna/tvgp-analytics#readme",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.2",
+    "moment": "^2.19.1",
+    "request": "^2.83.0",
+    "request-promise": "^4.2.2",
+    "sequelize": "^4.13.8",
+    "sqlite3": "^3.1.13"
+  },
+  "devDependencies": {
+    "eslint": "^4.8.0"
+  }
+}
