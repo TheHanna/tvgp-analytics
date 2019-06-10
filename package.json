@@ -20,12 +20,12 @@
   },
   "homepage": "https://github.com/TheHanna/tvgp-analytics#readme",
   "dependencies": {
-    "cheerio": "^1.0.0-rc.2",
-    "moment": "^2.19.1",
-    "request": "^2.83.0",
-    "request-promise": "^4.2.2",
-    "sequelize": "^4.13.8",
-    "sqlite3": "^3.1.13"
+    "cheerio": "^1.0.0-rc.3",
+    "moment": "^2.24.0",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.4",
+    "sequelize": "^5.8.8",
+    "sqlite3": "^4.0.8"
   },
   "devDependencies": {
     "eslint": "^4.8.0"
