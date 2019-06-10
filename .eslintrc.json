@@ -3,12 +3,16 @@
       "es6": true,
       "node": true
   },
+  "parserOptions": {
+    "ecmaVersion": 2019
+  },
   "extends": "eslint:recommended",
   "rules": {
     "indent": [
       "error",
       2
     ],
+    "no-unused-vars": 1,
     "linebreak-style": [
       "error",
       "unix"
@@ -17,10 +21,7 @@
       "error",
       "single"
     ],
-    "semi": [
-      "error",
-      "always"
-    ],
-    "no-console": null
+    "semi": 0,
+    "no-console": 0
   }
 }
