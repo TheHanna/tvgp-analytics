@@ -9,6 +9,8 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {});
   host.associate = function(models) {
+    host.belongsToMany(models.episode, { through: models.episodehost, as: 'hosts' })
+    host.belongsToMany(models.episode, { through: models.episodehost, as: 'episodes' })
   };
   return host;
 };

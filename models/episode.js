@@ -9,7 +9,8 @@ module.exports = (sequelize, DataTypes) => {
     guid: DataTypes.STRING,
   }, {});
   episode.associate = function(models) {
-    // associations can be defined here
+    episode.belongsToMany(models.host, { through: models.episodehost, as: 'episodes' })
+    episode.belongsToMany(models.host, { through: models.episodehost, as: 'hosts' })
   };
   return episode;
 };
