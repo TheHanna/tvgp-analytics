@@ -16,7 +16,7 @@ module.exports = {
       },
       displayName: {
         type: Sequelize.STRING,
-        nullable: true
+        allowNull: true
       },
       createdAt: {
         allowNull: false,
