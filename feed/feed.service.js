@@ -12,7 +12,7 @@ class FeedService {
   }
 
   async _hasLocal() {
-    const stats = await fs.stat(RSS_LOCAL_PATH)
+    const stats = await fs.stat(RSS_LOCAL_PATH).catch(() => null)
     return stats && stats.isFile() && stats.size > 0
   }
 
