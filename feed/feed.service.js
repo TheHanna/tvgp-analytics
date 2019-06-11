@@ -1,14 +1,44 @@
 // Imports
 const fs = require('fs').promises
+const got = require('got')
+const cheerio = require('cheerio')
 const RssParser = require('rss-parser')
 
 // Service variables
 const RSS_LOCAL_PATH = process.env.RSS_LOCAL_PATH
 const RSS_URL = process.env.RSS_URL
+const MAIN_PREFIX = 'TVGP Episode'
+
+const replacements = [
+  { guid: 'a1f6644af710bade0a67d72c2f173f25', find: '433', replace: '443' },
+  { guid: 'e35fe859787c4f25f9e84aa1ffc0ef13', find: 'Episode', replace: 'TVGP Episode' },
+  { guid: '9016ac9c34ee47d891c89628090e8a8e', find: '257v2', replace: '257' }
+]
+
+const removals = [ '605954fa848658fc49258c27b170ff1b', 'bab170c18e7fe869b68076007f434b02' ]
 
 class FeedService {
   constructor() {
     this.parser = new RssParser()
+  }
+
+  _fixFeedErrors(xmlString) {
+    const $ = cheerio.load(xmlString, { xmlMode: true })
+    const getByGuid = guid => $('item').find(`guid:contains('${guid}')`).parent('item')
+    const getTitle = item => $(item).find('title')
+    // Replacements
+    replacements.forEach(r => {
+      const item = getByGuid(r.guid)
+      const title = getTitle(item)
+      const fixedTitle = title.text().replace(r.find, r.replace)
+      title.text(fixedTitle)
+    })
+    // Removals
+    removals.forEach(guid => getByGuid(guid).remove())
+    // Trim to just main TVGP episodes
+    $('item').each((i, item) => getTitle(item).text().startsWith(MAIN_PREFIX) ? null : $(item).remove())
+    // Return altered feed
+    return $.html({ xmlMode: true })
   }
 
   async _hasLocal() {
@@ -22,7 +52,10 @@ class FeedService {
   }
 
   async _getRemote() {
-    return await this.parser.parseURL(RSS_URL)
+    const data = await got(RSS_URL, { headers: { 'content-type': 'text/xml' } })
+    const fixedData = this._fixFeedErrors(data.body)
+    await fs.writeFile(RSS_LOCAL_PATH, fixedData)
+    return await this._getLocal()
   }
 
   _getKeys(object) {
