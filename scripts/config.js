@@ -15,9 +15,9 @@ if (dbUrl) {
   config.host = parsedUrl.host
   config.dialect = parsedUrl.protocol.slice(0, -1)
   const data = { [nodeEnv]: config }
-  fs.writeFile(process.env.DB_CONFIG_PATH, JSON.stringify(data)).then(result => console.log(result))
+  fs.writeFile(process.env.DB_CONFIG_PATH, JSON.stringify(data)).then(() => console.log('Configured from database connection string env var'))
 } else {
   fs.readFile(process.env.DB_CONFIG_EXAMPLE_PATH, 'utf-8').then(res => {
-    fs.writeFile(process.env.DB_CONFIG_PATH, res)
+    fs.writeFile(process.env.DB_CONFIG_PATH, res).then(() => console.log('Configured from local example config'))
   })
 }

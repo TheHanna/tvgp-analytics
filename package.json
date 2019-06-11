@@ -7,7 +7,14 @@
   "description": "A web scraper to gather data about That Video Game Podcast, analyze, and produce neat charts, graphs, and customizable RSS feeds",
   "main": "index.js",
   "scripts": {
-    "postinstall": "node ./scripts/config.js; node_modules/.bin/sequelize db:migrate --config ./config/config.json --env $NODE_ENV",
+    "postinstall": "npm run config; npm run migrate",
+    "config": "node ./scripts/config.js",
+    "migrate": "node_modules/.bin/sequelize db:migrate --config ./config/config.json --env $NODE_ENV",
+    "rollback": "node_modules/.bin/sequelize db:migrate:undo --config ./config/config.json --env $NODE_ENV",
+    "rollback-all": "node_modules/.bin/sequelize db:migrate:undo:all --config ./config/config.json --env $NODE_ENV",
+    "migrate-local": "dotenv -e ./config/.env npm run migrate",
+    "rollback-local": "dotenv -e ./config/.env npm run rollback",
+    "rollback-all-local": "dotenv -e ./config/.env npm run rollback-all",
     "start": "node index.js",
     "dev": "nodemon index.js"
   },
