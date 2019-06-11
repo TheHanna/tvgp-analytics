@@ -8,15 +8,6 @@ const EpisodeService = require('./episode/episode.service')
 const feedService = new FeedService()
 const episodeService = new EpisodeService()
 
-// feedService.getSchema().then(schema => console.log(schema))
-
-function getHostIds(parsedHosts) {
-  const promises = []
-  parsedHosts.forEach(parsedHost => {
-    promises.push(Host.findOne({ where: parsedHost }).then(host => ({ ...parsedHost, id: host.id })))
-  })
-  return Promise.all(promises)
-}
 
 function hostFinder(host, existingHost) {
   const firstNameMatch = host.firstName === existingHost.firstName
