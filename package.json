@@ -1,6 +1,9 @@
 {
   "name": "tvgp-analytics",
   "version": "1.0.0",
+  "engines": {
+    "node": "12.4.0"
+  },
   "description": "A web scraper to gather data about That Video Game Podcast, analyze, and produce neat charts, graphs, and customizable RSS feeds",
   "main": "index.js",
   "scripts": {
