@@ -1,5 +1,4 @@
 const $ = require('cheerio')
-const Host = require('../models').host
 const MAIN_PREFIX = 'TVGP Episode'
 const SECONDARY_PREFIX = 'Episode'
 
