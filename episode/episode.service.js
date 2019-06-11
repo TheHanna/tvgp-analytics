@@ -69,7 +69,7 @@ class EpisodeService {
     return hostsArr
   }
 
-  async parseHost(hostString) {
+  parseHost(hostString) {
     const hostParts = hostString.split(' ')
     const host = {}
     if (hostParts.length === 3) {
@@ -80,7 +80,8 @@ class EpisodeService {
       host.firstName = hostParts[0]
       host.lastName = hostParts[1]
     }
-    return await Host.findOrCreate({ where: host, defaults: host }).then(result => result[0])
+    return host
+    // return await Host.findOrCreate({ where: host, defaults: host }).then(result => result[0])
 
   }
   
