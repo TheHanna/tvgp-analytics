@@ -1,6 +1,5 @@
 // Imports
 require('dotenv').config({ path: './config/.env' })
-const sequelize = require('./models').sequelize
 const Episode = require('./models').episode
 const Host = require('./models').host
 const EpisodeHost = require('./models').episodehost
@@ -19,19 +18,33 @@ function getHostIds(parsedHosts) {
   return Promise.all(promises)
 }
 
+function hostFinder(host, existingHost) {
+  const firstNameMatch = host.firstName === existingHost.firstName
+  const lastNameMatch = host.lastName === existingHost.lastName
+  const displayNameMatch = host.displayName == existingHost.displayName
+  return firstNameMatch && lastNameMatch && displayNameMatch
+}
+
 async function createHosts(parsedEpisodes) {
+  const existingHosts = await Host.findAll()
+  const hasHosts = existingHosts.length > 0
   let hosts = []
   parsedEpisodes.forEach(episode => hosts.push(...episode.hosts))
   hosts = Array.from(new Set(hosts))
   hosts = hosts.map(host => episodeService.parseHost(host))
-  return await sequelize.transaction(async t => {
-    const promises = []
-    hosts.forEach(host => promises.push(Host.findOrCreate({ where: host, defaults: host, transaction: t })))
-    return await Promise.all(promises).then(hosts => hosts.map(host => host[0]))
-  }).catch(err => console.error('Ah, shit!', err))
+  let unknownHosts = hasHosts ?
+    hosts.reduce((acc, host) => {
+      const found = existingHosts.find(existingHost => hostFinder(host, existingHost))
+      if (!found) acc.push(host)
+      return acc
+    }, []) : hosts
+  if (unknownHosts.length > 0) await Host.bulkCreate(unknownHosts)
+  return await Host.findAll()
 }
 
 async function createEpisodes(parsedEpisodes) {
+  const existingEpisodes = await Episode.findAll()
+  const hasEpisodes = existingEpisodes.length > 0
   let episodes = []
   parsedEpisodes.forEach(episode => episodes.push({
     number: episode.number,
@@ -41,44 +54,56 @@ async function createEpisodes(parsedEpisodes) {
     publishDate: episode.date,
     guid: episode.guid
   }))
-  return await sequelize.transaction(async t => {
-    const promises = []
-    episodes.forEach(episode => promises.push(Episode.findOrCreate({ where: { guid: episode.guid }, defaults: episode, transaction: t })))
-    return await Promise.all(promises).then(episodes => episodes.map(episode => episode[0]))
-  }).catch(err => console.error('Ah, shit!', err))
+  let unknownEpisodes = hasEpisodes ?
+    episodes.reduce((acc, episode) => {
+      const found = existingEpisodes.find(existingEpisode => episode.guid === existingEpisode.guid)
+      if (!found) acc.push(episode)
+      return acc
+    }, []) : episodes
+  if (unknownEpisodes.length > 0) await Episode.bulkCreate(unknownEpisodes)
+  return await Episode.findAll()
 }
 
 async function createEpisodeHosts(parsedEpisodes) {
-  let episodeHostPromises = []
-  let hostIdPromises = []
-  parsedEpisodes.forEach(async episode => {
-    hostIdPromises.push(getHostIds(episode.parsedHosts))
+  const existingEpisodeHosts = await EpisodeHost.findAll()
+  const hasEpisodeHosts = existingEpisodeHosts.length > 0
+  let episodeHosts = []
+  parsedEpisodes.forEach(episode => {
+    episode.parsedHosts.forEach(parsedHost => episodeHosts.push({
+      hostId: parsedHost.id,
+      episodeId: episode.id
+    }))
   })
-  const hostsWithIds = await Promise.all(hostIdPromises)
-  return await sequelize.transaction(async t => {
-    hostsWithIds.forEach((hosts, i) => {
-      const episode = parsedEpisodes[i];
-      hosts.forEach(host => {
-        const episodeHost = { hostId: host.id, episodeId: episode.id }
-        episodeHostPromises.push(EpisodeHost.findOrCreate({ where: episodeHost, defaults: episodeHost, transaction: t }))
+  let unknownEpisodeHosts = hasEpisodeHosts ?
+    episodeHosts.reduce((acc, episodeHost) => {
+      const found = existingEpisodeHosts.find(existingEpisodeHost => {
+        return episodeHost.hostId === existingEpisodeHost.hostId &&
+          episodeHost.episodeId === existingEpisodeHost.episodeId
       })
-    })
-    return await Promise.all(episodeHostPromises).then(episodeHosts => episodeHosts.map(episodeHost => episodeHost[0]))
-  }).catch(err => console.error('Ah, shit!', err))
+      if (!found) acc.push(episodeHost)
+      return acc
+    }, []) : episodeHosts
+  if (unknownEpisodeHosts.length > 0) await EpisodeHost.bulkCreate(unknownEpisodeHosts)
+  return await EpisodeHost.findAll()
 }
 
 feedService.get()
-  .then(feed => episodeService.filter(feed.items))
+  .then(feed => feed.items.reverse())
   .then(episodes => episodes.map(e => episodeService.parse(e)))
   .then(async parsedEpisodes => {
     console.log('Creating hosts...')
     const hosts = await createHosts(parsedEpisodes)
     console.log('Creating episodes...')
-    const episodes = await createEpisodes(parsedEpisodes)
+    const episodes = await createEpisodes(parsedEpisodes).catch(err => console.error('Ah, fuck!', err))
+    // Map new ids to parsedHosts and episodes on our parsedEpisodes object
     parsedEpisodes.forEach(episode => {
       episode.id = episodes.find(e => episode.guid === e.guid).id
-      episode.parsedHosts = episode.hosts.map(host => episodeService.parseHost(host))
+      episode.parsedHosts = episode.hosts.reduce((acc, host) => {
+        const found = hosts.find(existingHost => hostFinder(episodeService.parseHost(host), existingHost))
+        if (found) acc.push(found.dataValues)
+        return acc
+      }, [])
     })
     console.log('Associating episodes and hosts...')
-    const episodeHosts = await createEpisodeHosts(parsedEpisodes)
+    await createEpisodeHosts(parsedEpisodes)
   })
