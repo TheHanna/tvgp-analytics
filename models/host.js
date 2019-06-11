@@ -4,19 +4,19 @@ module.exports = (sequelize, DataTypes) => {
     firstName: DataTypes.STRING,
     lastName: DataTypes.STRING,
     displayName: {
-      type:DataTypes.STRING,
-      nullable: true
-    }
-  }, {
-    getterMethods: {
-      fullName() {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    fullName: {
+      type: DataTypes.VIRTUAL,
+      get() {
         const hasDisplayName = this.displayName !== null
         return hasDisplayName
           ? `${this.firstName} "${this.displayName}" ${this.lastName}`
           : `${this.firstName} ${this.lastName}`
       }
     }
-  });
+  }, {});
   host.associate = function(models) {
     host.belongsToMany(models.episode, { through: models.episodehost, as: 'hosts' })
     host.belongsToMany(models.episode, { through: models.episodehost, as: 'episodes' })
