@@ -3,3 +3,4 @@ node_modules
 data/rss.xml
 data/*.sqlite3
 data/html/*.html
+config/config.json
