@@ -1,8 +1,10 @@
 const express = require('express')
 const api = require('./api')
+const cors = require('cors')
 const app = express()
 const port = process.env.PORT || 3000
 
+app.use(cors())
 app.get('/', (req, res) => res.sendStatus(404))
 app.get('/episodes', async (req, res) => {
   const episodes = await api.getEpisodes()
