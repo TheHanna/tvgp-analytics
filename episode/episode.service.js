@@ -38,18 +38,18 @@ class EpisodeService {
     })
   }
 
-  async getEpisodeWithHosts (id) {
-    if (!id) return
+  async getEpisodeWithHosts (number) {
+    if (!number) return
     const episode = await db.select([ 'id', 'number', 'title' ])
       .from(TABLE_NAME)
-      .where({ id })
+      .where({ number })
       .first()
       .catch(error => { throw new Error(error) })
     if (!episode) return
     const hosts = await db.from('episode_host')
       .select(['id', 'firstName', 'lastName', 'displayName'].map(a => `host.${a}`))
       .select('episode_host.episodeId')
-      .where('episodeId', id)
+      .where('episodeId', episode.id)
       .leftJoin('host', 'host.id', 'episode_host.hostId')
     episode.hosts = hosts.filter(h => h.episodeId === episode.id)
       .map(h => {
