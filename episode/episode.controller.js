@@ -8,11 +8,11 @@ router.get('/episodes', async (req, res) => {
   res.status(200).send(episodes)
 })
 
-router.get('/episodes/:id', async (req, res) => {
-  const episode = await service.getEpisodeWithHosts(req.params.id)
+router.get('/episodes/:number', async (req, res) => {
+  const episode = await service.getEpisodeWithHosts(req.params.number)
   return episode
     ? res.status(200).send(episode)
-    : res.status(404).send(`Episode with id ${req.params.id} not found`)
+    : res.status(404).send(`Episode number ${req.params.number} not found`)
 })
 
 module.exports = { router }
