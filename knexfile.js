@@ -1,7 +1,11 @@
 // Update with your config settings.
 require('dotenv').config({ path: './config/.env' })
 
-let min, max, pool; [min, max, pool] = [process.env.DB_POOL_MIN || 2, process.env.DB_POOL_MAX || 10, { min, max }]
+const pool = {
+  min: parseInt(process.env.DB_POOL_MIN, 10) || 0,
+  max: parseInt(process.env.DB_POOL_MAX, 10) || 10,
+  idleTimeoutMillis: parseInt(process.env.DB_POOL_IDLE, 10) || 1000
+}
 const migrations = { tableName: process.env.DB_MIGRATIONS_TABLE_NAME || 'knex_migrations' }
 const client = process.env.DB_CLIENT || 'mysql2'
 const connection = process.env.CLEARDB_DATABASE_URL || {
@@ -11,6 +15,6 @@ const connection = process.env.CLEARDB_DATABASE_URL || {
 }
 
 module.exports = {
-  development: { client, connection, migrations },
+  development: { client, connection, pool,  migrations },
   production: { client, connection, pool, migrations }
 };
