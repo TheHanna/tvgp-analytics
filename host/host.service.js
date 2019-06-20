@@ -42,10 +42,13 @@ class HostService {
   }
 
   async getHostWithEpisodes (id) {
+    if (!id) return
     const host = await db.select(['id', 'firstName', 'lastName', 'displayName'])
       .from(TABLE_NAME)
       .where({ id })
       .first()
+      .catch(error => { throw new Error(error) })
+    if (!host) return
     const episodes = await db.from('episode_host')
       .select(['id', 'number', 'title'].map(a => `episode.${a}`))
       .select('episode_host.hostId')

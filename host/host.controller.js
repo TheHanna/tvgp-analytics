@@ -10,7 +10,9 @@ router.get('/hosts', async (req, res) => {
 
 router.get('/hosts/:id', async (req, res) => {
   const host = await service.getHostWithEpisodes(req.params.id)
-  res.status(200).send(host)
+  return host
+    ? res.status(200).send(host)
+    : res.status(404).send(`Host with id ${req.params.id} not found`)
 })
 
 module.exports = { router }
