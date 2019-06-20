@@ -14,6 +14,31 @@ class EpisodeService {
     return await db.select().where({ id }).table(TABLE_NAME)
   }
 
+  async getEpisodesWithHosts (offset, limit) {
+    const episodes = await db.select([ 'id', 'number', 'title' ])
+      .from(TABLE_NAME)
+      .offset(offset)
+      .limit(limit)
+    const episodeIds = episodes.map(e => e.id)
+    const hosts = await db.from('episode_host')
+      .select(['id', 'firstName', 'lastName', 'displayName'].map(a => `host.${a}`))
+      .select('episode_host.episodeId')
+      .whereIn('episodeId', episodeIds)
+      .leftJoin('host', 'host.id', 'episode_host.hostId')
+    return episodes.map(e => {
+      e.hosts = hosts.filter(h => h.episodeId === e.id)
+        .map(h => {
+          delete h.episodeId
+          h.fullName = h.displayName
+            ? `${h.firstName} "${h.displayName}" ${h.lastName}`
+            : `${h.firstName} ${h.lastName}`
+          return h
+        })
+      delete e.id
+      return e
+    })
+  }
+
   async hasEpisodes () {
     const episodes = await db(TABLE_NAME).count('id as total').first()
     return episodes.total > 0
