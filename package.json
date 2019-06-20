@@ -7,7 +7,7 @@
   "description": "A web scraper to gather data about That Video Game Podcast, analyze, and produce neat charts, graphs, and customizable RSS feeds",
   "main": "index.js",
   "scripts": {
-    "postinstall": "dotenv -e ./config/.env npm run migrate",
+    "postinstall": "dotenv -e ./config/.env npm run migrate; npm run rss",
     "migrate": "node_modules/.bin/knex migrate:latest $NODE_ENV",
     "rollback": "node_modules/.bin/knex migrate:rollback $NODE_ENV",
     "rss": "node rss/rss.js",
