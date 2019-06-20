@@ -7,13 +7,11 @@
   "description": "A web scraper to gather data about That Video Game Podcast, analyze, and produce neat charts, graphs, and customizable RSS feeds",
   "main": "index.js",
   "scripts": {
-    "postinstall": "npm run migrate",
-    "migrate": "node_modules/.bin/sequelize db:migrate --config ./config/config.json --env $NODE_ENV",
-    "rollback": "node_modules/.bin/sequelize db:migrate:undo --config ./config/config.json --env $NODE_ENV",
-    "rollback-all": "node_modules/.bin/sequelize db:migrate:undo:all --config ./config/config.json --env $NODE_ENV",
+    "postinstall": "dotenv -e ./config/.env npm run migrate",
+    "migrate": "node_modules/.bin/knex migrate:latest $NODE_ENV",
+    "rollback": "node_modules/.bin/knex migrate:rollback $NODE_ENV",
     "migrate-local": "dotenv -e ./config/.env npm run migrate",
     "rollback-local": "dotenv -e ./config/.env npm run rollback",
-    "rollback-all-local": "dotenv -e ./config/.env npm run rollback-all",
     "start": "node index.js",
     "dev": "nodemon index.js"
   },
@@ -31,16 +29,13 @@
   },
   "homepage": "https://github.com/TheHanna/tvgp-analytics#readme",
   "dependencies": {
+    "@paciolan/express-easy-routes": "^1.0.11",
     "cheerio": "^1.0.0-rc.3",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "got": "^9.6.0",
     "knex": "^0.17.6",
-    "moment": "^2.24.0",
     "mysql2": "^1.6.5",
-    "pretty": "^2.0.0",
-    "request": "^2.88.0",
-    "request-promise": "^4.2.4",
     "rss-parser": "^3.7.1",
     "sequelize": "^5.8.8"
   },
@@ -49,7 +44,6 @@
     "dotenv-cli": "^2.0.0",
     "eslint": "^5.16.0",
     "nodemon": "^1.19.1",
-    "sequelize-cli": "^5.4.0",
-    "sqlite3": "^4.0.8"
+    "sequelize-cli": "^5.4.0"
   }
 }
