@@ -35,10 +35,8 @@ class HostService {
       h.episodes = episodes.filter(e => e.hostId === h.id)
         .map(e => {
           delete e.hostId
-          delete e.id
           return e
         })
-      delete h.id
       return h
     })
   }
@@ -56,10 +54,8 @@ class HostService {
     host.episodes = episodes.filter(e => e.hostId === host.id)
       .map(e => {
         delete e.hostId
-        delete e.id
         return e
       })
-    delete host.id
     return host
   }
 

@@ -34,7 +34,6 @@ class EpisodeService {
             : `${h.firstName} ${h.lastName}`
           return h
         })
-      delete e.id
       return e
     })
   }
@@ -57,7 +56,6 @@ class EpisodeService {
           : `${h.firstName} ${h.lastName}`
         return h
       })
-    delete episode.id
     return episode
   }
 
