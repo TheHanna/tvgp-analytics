@@ -50,7 +50,7 @@ class FeedService {
   async _hasLocal() {
     const stats = await fs.stat(RSS_LOCAL_PATH).catch(() => null)
     const now = Date.now()
-    const stale = (now - stats.birthtimeMs) > 86400000
+    const stale = stats ? (now - stats.birthtimeMs) > 86400000 : false
     return stats && stats.isFile() && !stale && stats.size > 0
   }
 
