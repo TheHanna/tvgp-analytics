@@ -8,4 +8,9 @@ router.get('/hosts', async (req, res) => {
   res.status(200).send(hosts)
 })
 
+router.get('/hosts/:id', async (req, res) => {
+  const host = await service.getHostWithEpisodes(req.params.id)
+  res.status(200).send(host)
+})
+
 module.exports = { router }
