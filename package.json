@@ -10,8 +10,7 @@
     "postinstall": "dotenv -e ./config/.env npm run migrate",
     "migrate": "node_modules/.bin/knex migrate:latest $NODE_ENV",
     "rollback": "node_modules/.bin/knex migrate:rollback $NODE_ENV",
-    "migrate-local": "dotenv -e ./config/.env npm run migrate",
-    "rollback-local": "dotenv -e ./config/.env npm run rollback",
+    "rss": "node rss/rss.js",
     "start": "node index.js",
     "dev": "nodemon index.js"
   },
