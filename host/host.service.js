@@ -1,7 +1,7 @@
 const db = require('../db')
 const TABLE_NAME = 'host'
 
-class HostService {
+class _HostService {
   hostFinder (host, knownHost) {
     const firstNameMatch = host.firstName === knownHost.firstName
     const lastNameMatch = host.lastName === knownHost.lastName
@@ -14,7 +14,18 @@ class HostService {
   }
 
   async getById (id) {
-    return await db.select().where({ id }).table(TABLE_NAME)
+    return await db.select()
+      .from(TABLE_NAME)
+      .where({ id })
+      .first()
+  }
+
+  async getByEpisodeId (episodeId) {
+    console.log(episodeId)
+    return await db.from('episode_host')
+      .select('host.*')
+      .where({ episodeId })
+      .leftJoin('host', 'host.id', 'episode_host.hostId')
   }
 
   async getHostsWithEpisodes (offset, limit) {
@@ -114,4 +125,6 @@ class HostService {
   }
 }
 
-module.exports = HostService
+const HostService = new _HostService()
+
+export { HostService }
