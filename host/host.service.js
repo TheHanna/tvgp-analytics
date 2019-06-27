@@ -116,7 +116,7 @@ class _HostService {
   async createHosts (hosts) {
     const hasHosts = await this.hasHosts()
     const unknownHosts = hasHosts
-      ? this.getUnknownHosts(hosts)
+      ? await this.getUnknownHosts(hosts)
       : this.getUniqueHosts(hosts)
     const hasHostsToCreate = unknownHosts.length > 0
     return hasHostsToCreate

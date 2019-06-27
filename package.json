@@ -11,7 +11,7 @@
     "postinstall": "dotenv -e ./config/.env npm run migrate; npm run rss",
     "migrate": "node_modules/.bin/knex migrate:latest $NODE_ENV",
     "rollback": "node_modules/.bin/knex migrate:rollback $NODE_ENV",
-    "rss": "node rss/rss.js",
+    "rss": "node -r esm rss/rss.js",
     "start": "node -r esm index.js",
     "dev": "nodemon -- -r esm index.js"
   },

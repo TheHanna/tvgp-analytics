@@ -1,9 +1,7 @@
 const db = require('../db')
-const HostService = require('../host/host.service')
-const EpisodeService = require('../episode/episode.service')
+import { HostService as hostService} from '../host'
+import { EpisodeService as episodeService} from '../episode'
 const TABLE_NAME = 'episode_host'
-const hostService = new HostService()
-const episodeService = new EpisodeService()
 
 class EpisodeHostService {
   async getAll () {
@@ -40,6 +38,10 @@ class EpisodeHostService {
     })
   }
 
+  associationFinder (association, knownAssociation) {
+    return association.id === knownAssociation.id
+  }
+
   buildAssociations (feedItems) {
     const associations = []
     feedItems.forEach(item => {
@@ -64,7 +66,7 @@ class EpisodeHostService {
     const mappedItems = await this.mapIdsToParsedItems(feedItems)
     const hasAssociations = await this.hasAssociations()
     const associations = this.buildAssociations(mappedItems)
-    const unknownAssociations = hasAssociations ? this.getUnknownAssociations(associations) : associations
+    const unknownAssociations = hasAssociations ? await this.getUnknownAssociations(associations) : associations
     const hasAssociationsToCreate = unknownAssociations.length > 0
     return hasAssociationsToCreate
       ? await this.addAssociations(unknownAssociations)

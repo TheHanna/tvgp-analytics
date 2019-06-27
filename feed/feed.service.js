@@ -3,8 +3,8 @@ const fs = require('fs').promises
 const got = require('got')
 const cheerio = require('cheerio')
 const RssParser = require('rss-parser')
-const EpisodeService = require('../episode/episode.service')
-const episodeService = new EpisodeService()
+import { EpisodeService as episodeService } from '../episode'
+
 
 // Service variables
 const RSS_LOCAL_PATH = process.env.RSS_LOCAL_PATH
