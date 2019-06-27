@@ -98,7 +98,7 @@ class _EpisodeService {
 
   async createEpisodes (episodes) {
     const hasEpisodes = await this.hasEpisodes()
-    const unknownEpisodes = hasEpisodes ? this.getUnknownEpisodes(episodes) : episodes
+    const unknownEpisodes = hasEpisodes ? await this.getUnknownEpisodes(episodes) : episodes
     const hasEpisodesToCreate = unknownEpisodes.length > 0
     return hasEpisodesToCreate
       ? await this.addEpisodes(unknownEpisodes)

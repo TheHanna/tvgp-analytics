@@ -1,11 +1,9 @@
+import { HostService as hostService } from '../host'
+import { EpisodeService as episodeService } from '../episode'
 require('dotenv').config({ path: './config/.env' })
 const FeedService = require('../feed/feed.service')
-const HostService = require('../host/host.service')
-const EpisodeService = require('../episode/episode.service')
 const EpisodeHostService = require('../episode-host/episode-host.service')
 const feedService = new FeedService()
-const hostService = new HostService()
-const episodeService = new EpisodeService()
 const episodeHostService = new EpisodeHostService()
 
 async function createHosts (items) {
