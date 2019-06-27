@@ -4,6 +4,7 @@
   "engines": {
     "node": "12.4.0"
   },
+  "type": "module",
   "description": "A web scraper to gather data about That Video Game Podcast, analyze, and produce neat charts, graphs, and customizable RSS feeds",
   "main": "index.js",
   "scripts": {
@@ -11,8 +12,8 @@
     "migrate": "node_modules/.bin/knex migrate:latest $NODE_ENV",
     "rollback": "node_modules/.bin/knex migrate:rollback $NODE_ENV",
     "rss": "node rss/rss.js",
-    "start": "node index.js",
-    "dev": "nodemon index.js"
+    "start": "node -r esm index.js",
+    "dev": "nodemon -- -r esm index.js"
   },
   "repository": {
     "type": "git",
@@ -32,8 +33,12 @@
     "cheerio": "^1.0.0-rc.3",
     "cors": "^2.8.5",
     "dotenv": "^8.0.0",
+    "esm": "^3.2.25",
     "express": "^4.17.1",
+    "express-graphql": "^0.8.0",
     "got": "^9.6.0",
+    "graphql": "^14.4.0",
+    "graphql-tools": "^4.0.5",
     "knex": "^0.17.6",
     "mysql2": "^1.6.5",
     "rss-parser": "^3.7.1"
