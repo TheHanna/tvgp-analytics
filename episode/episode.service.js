@@ -1,7 +1,7 @@
 const db = require('../db')
 const TABLE_NAME = 'episode'
 
-class EpisodeService {
+class _EpisodeService {
   episodeFinder (episode, knownEpisode) {
     return episode.guid === knownEpisode.guid
   }
@@ -12,6 +12,20 @@ class EpisodeService {
 
   async getById (id) {
     return await db.select().where({ id }).table(TABLE_NAME)
+  }
+
+  async getByNumber (number) {
+    return await db.select()
+      .from(TABLE_NAME)
+      .where({ number })
+      .first()
+  }
+
+  async getByHostId (hostId) {
+    return await db.select()
+      .from('episode_host')
+      .where({ hostId })
+      .leftJoin('episode', 'episode.id', 'episode_host.episodeId')
   }
 
   async getEpisodesWithHosts (offset, limit) {
@@ -92,4 +106,6 @@ class EpisodeService {
   }
 }
 
-module.exports = EpisodeService
+const EpisodeService = new _EpisodeService()
+
+export { EpisodeService }
