@@ -38,6 +38,7 @@ const EpisodeType = new GraphQLObjectType({
     description: { type : GraphQLString },
     publishDate: { type : DateType },
     guid: { type : GraphQLString },
+    runtime: { type : GraphQLInt },
     hosts: {
       type: HostsType,
       resolve: async episode => await HostService.getByEpisodeId(episode.id)
