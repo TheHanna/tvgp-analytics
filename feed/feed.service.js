@@ -175,6 +175,9 @@ class FeedService {
         runtime,
         publishDate: feedItem.isoDate,
         guid: feedItem.guid,
+        fileSize: feedItem.enclosure.length,
+        fileType: feedItem.enclosure.type,
+        fileUrl: feedItem.enclosure.url
       },
       hosts
     }
