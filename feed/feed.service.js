@@ -138,6 +138,10 @@ class FeedService {
     return { title: parts[1], number: this.parseNumber(parts[0]) }
   }
 
+  parseRuntime(timeString) {
+    return timeString.split(':').reduce((acc, time) => (60 * acc) + +time);
+  }
+
   async get() {
     const local = await this._hasLocal()
     return local ? await this._getLocal() : await this._getRemote()
@@ -161,10 +165,17 @@ class FeedService {
   parseItem(feedItem) {
     const title = this.parseTitle(feedItem.title)
     const description = this.parseContent(feedItem.content)
+    const runtime = this.parseRuntime(feedItem.itunes.duration)
     const hosts = description.hosts
     delete description.hosts
     return {
-      episode: { ...title, ...description, publishDate: feedItem.isoDate, guid: feedItem.guid },
+      episode: {
+        ...title,
+        ...description,
+        runtime,
+        publishDate: feedItem.isoDate,
+        guid: feedItem.guid,
+      },
       hosts
     }
   }
