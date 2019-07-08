@@ -39,6 +39,9 @@ const EpisodeType = new GraphQLObjectType({
     publishDate: { type : DateType },
     guid: { type : GraphQLString },
     runtime: { type : GraphQLInt },
+    fileSize: { type : GraphQLInt },
+    fileType: { type : GraphQLString },
+    fileUrl: { type : GraphQLString },
     hosts: {
       type: HostsType,
       resolve: async episode => await HostService.getByEpisodeId(episode.id)
