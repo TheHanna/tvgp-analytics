@@ -166,6 +166,7 @@ class FeedService {
     const title = this.parseTitle(feedItem.title)
     const description = this.parseContent(feedItem.content)
     const runtime = this.parseRuntime(feedItem.itunes.duration)
+    const now = new Date().toISOString()
     const hosts = description.hosts
     delete description.hosts
     return {
@@ -173,6 +174,8 @@ class FeedService {
         ...title,
         ...description,
         runtime,
+        created_at: now,
+        updated_at: now,
         publishDate: feedItem.isoDate,
         guid: feedItem.guid,
         fileSize: feedItem.enclosure.length,
