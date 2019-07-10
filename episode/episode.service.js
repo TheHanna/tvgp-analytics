@@ -7,7 +7,7 @@ class _EpisodeService {
   }
 
   async getAll (columns) {
-    return await db.select(columns).table(TABLE_NAME)
+    return await db.select(columns).table(TABLE_NAME).orderBy('publishDate', 'desc')
   }
 
   async getById (id) {

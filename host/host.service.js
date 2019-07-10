@@ -21,7 +21,6 @@ class _HostService {
   }
 
   async getByEpisodeId (episodeId) {
-    console.log(episodeId)
     return await db.from('episode_host')
       .select('host.*')
       .where({ episodeId })
