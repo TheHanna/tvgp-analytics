@@ -34,7 +34,7 @@
     "cors": "^2.8.5",
     "dotenv": "^8.0.0",
     "esm": "^3.2.25",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "express-graphql": "^0.8.0",
     "got": "^9.6.0",
     "graphql": "^14.4.0",
